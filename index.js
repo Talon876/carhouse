@@ -2,8 +2,8 @@ var express = require('express');
 var app = express();
 var logger = require('morgan');
 var bodyParser = require('body-parser');
-var http = require('http').Server(app);
-var io = require('socket.io')(http);
+var server = require('http').Server(app);
+var io = require('socket.io')(server);
 var port = process.env.PORT || 3010;
 
 var db = require('./database');
@@ -26,4 +26,7 @@ io.on('connection', function (client) {
     client.join('eventstream');
 });
 
-http.listen(port);
+server.listen(port);
+server.on('listening', function() {
+    console.log('Listening on port ' + port);
+});
