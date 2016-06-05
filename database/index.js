@@ -1,8 +1,9 @@
 var Sequelize = require('sequelize');
+var dbfile = process.env.DBFILE || 'database.db';
 
 var sequelize = new Sequelize('garagedb', null, null, {
     dialect: 'sqlite',
-    storage: 'database.db'
+    storage: dbfile
 });
 
 var GarageEvent = sequelize.define('garage_events', {
@@ -38,7 +39,7 @@ var generateEvent = function (kind, when, data) {
 module.exports = {
     init: function () {
         sequelize.sync().then(function() {
-            console.log('Database initialized');
+            console.log(dbfile + ' database initialized');
         });
     },
     GarageEvent: GarageEvent,
