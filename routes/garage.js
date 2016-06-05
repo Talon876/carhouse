@@ -14,7 +14,7 @@ router.get('/', function(req, res) {
         qs: { 'access_token': token }
     };
     request(statusOptions, function(err, resp, body) {
-        console.log(body);
+        console.log('Device info: ' + body);
         var status = 'unknown';
         if (!err) {
             var data = JSON.parse(body);
@@ -34,13 +34,35 @@ router.post('/toggle', function(req, res) {
         qs: { 'access_token': token }
     };
     request(toggleDoor, function(err, resp, body) {
-        console.log(body);
         if (!err) {
             res.end('ok');
         } else {
             res.end('fail');
         }
     });
+});
+
+var eventHandlers = {
+    'garage-door-state-change': function(info) {
+        var doorState = convertDoorState(parseInt(info.data));
+        var when = info.published_at;
+        console.log('Door is ' + doorState + ' as of ' + when);
+    },
+    'garage-door-toggled': function(info) {
+        var when = info.published_at;
+        console.log('Door was toggled at ' + when);
+    }
+};
+
+router.post('/garage/events', function(req, res) {
+    var event = req.body.event;
+    var handler = eventHandlers[req.body.event];
+    if (handler) {
+        handler(req.body);
+    } else {
+        console.log('No handler found for ' + event);
+    }
+    res.sendStatus(200);
 });
 
 var convertDoorState = function(value) {
