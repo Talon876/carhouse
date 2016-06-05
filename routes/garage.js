@@ -136,3 +136,7 @@ module.exports = {
     routes: router,
     listen: socketIoHandler
 };
+
+module.exports = function(io) {
+    return router;
+};
