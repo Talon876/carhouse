@@ -1,5 +1,4 @@
-(function() {
-
+document.addEventListener('DOMContentLoaded', function() {
     var toggleDoor = function() {
         var request = new XMLHttpRequest();
         request.open('POST', '/toggle', true);
@@ -17,4 +16,15 @@
         console.log('Toggling garage door.');
         toggleDoor();
     };
-}());
+
+    var socket = io.connect(window.location.origin);
+    var doorStatus = document.getElementById('doorStatus');
+    socket.on('garage-door-state-change', function(newState) {
+        var message = 'Garage door is now ' + newState + '.';
+        console.log(message);
+        doorStatus.innerText = message;
+    });
+    socket.on('garage-door-toggled', function() {
+        console.log('Garage door was toggled');
+    });
+});

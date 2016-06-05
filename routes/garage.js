@@ -1,7 +1,9 @@
 var express = require('express');
 var request = require('request');
+var io = require('socket.io');
 var router = express.Router();
 var token = process.env.TOKEN || 'your-particle-auth-token';
+var emitter;
 
 var BASE_URL = 'https://api.particle.io/v1/devices/garage_bro';
 var OPEN = 0;
@@ -47,10 +49,12 @@ var eventHandlers = {
         var doorState = convertDoorState(parseInt(info.data));
         var when = info.published_at;
         console.log('Door is ' + doorState + ' as of ' + when);
+        emitter.to('garage-events').emit('garage-door-state-change', doorState);
     },
     'garage-door-toggled': function(info) {
         var when = info.published_at;
         console.log('Door was toggled at ' + when);
+        emitter.to('garage-events').emit('garage-door-toggled');
     }
 };
 
@@ -75,4 +79,17 @@ var convertDoorState = function(value) {
     }
 };
 
-module.exports = router;
+var socketIoHandler = function(server) {
+    var socket = io(server);
+    emitter = socket;
+
+    socket.on('connection', function(client) {
+        console.log('Client ' + client.id + ' joined');
+        client.join('garage-events');
+    });
+};
+
+module.exports = {
+    routes: router,
+    listen: socketIoHandler
+};
