@@ -3,6 +3,7 @@ var request = require('request');
 var io = require('socket.io');
 var router = express.Router();
 var token = process.env.TOKEN || 'your-particle-auth-token';
+var smsSecret = process.env.SMSSECRET || 'sms-secret';
 var emitter;
 
 var BASE_URL = 'https://api.particle.io/v1/devices/garage_bro';
@@ -29,19 +30,47 @@ router.get('/', function(req, res) {
     });
 });
 
-router.post('/toggle', function(req, res) {
-    var toggleDoor = {
+var toggleDoor = function(cb) {
+    var toggleDoorOptions = {
         url: BASE_URL + '/toggle',
         method: 'post',
         qs: { 'access_token': token }
     };
-    request(toggleDoor, function(err, resp, body) {
+    request(toggleDoorOptions, function(err, resp, body) {
+        cb(err, resp, body);
+    });
+};
+
+router.post('/toggle', function(req, res) {
+    toggleDoor(function(err, resp, body) {
         if (!err) {
             res.end('ok');
         } else {
             res.end('fail');
         }
     });
+});
+
+var allowed = {};
+router.post('/garage/sms', function(req, res) {
+    var from = req.body.From;
+    var body = req.body.Body;
+    console.log('Received ' + body + ' from ' + from);
+
+    if (body === smsSecret) {
+        allowed[from] = true;
+    }
+
+    if (allowed[from] === true) {
+        console.log('Toggling garage door for ' + from);
+        toggleDoor(function(err, resp, body) {});
+        res.set('content-type', 'text/plain');
+        res.send('toggled');
+    } else {
+        console.log('Failed attempt from ' + from);
+        res.sendStatus(403);
+    }
+
 });
 
 var eventHandlers = {
