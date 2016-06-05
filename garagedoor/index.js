@@ -19,13 +19,28 @@ GarageDoor.prototype.checkStatus = function (cb) {
     request(statusOptions, function (err, resp, body) {
         if (!err) {
             var info = JSON.parse(body);
-            cb({
+            var results = {
                 status: info.result,
                 display: convertDoorState(info.result)
-            });
+            };
+            console.log('Garage door is ' + results.display);
+            cb(results);
         } else {
             console.error('Error retrieving door status ' + JSON.stringify(err));
             cb(null);
+        }
+    });
+};
+
+GarageDoor.prototype.toggle = function () {
+    var toggleDoorOptions = {
+        url: this.getDeviceUrl() + '/toggle',
+        method: 'post',
+        qs: {'access_token': this.token}
+    };
+    request(toggleDoorOptions, function (err, resp, body) {
+        if (err) {
+            console.error('Error toggling garage door ' + JSON.stringify(err));
         }
     });
 };

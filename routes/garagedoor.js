@@ -19,6 +19,7 @@ var routerBuilder = function (door) {
     });
 
     router.post('/toggle', function (req, res) {
+        door.toggle();
         res.sendStatus(202);
     });
 
