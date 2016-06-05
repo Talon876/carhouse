@@ -19,6 +19,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     var socket = io.connect(window.location.origin);
     var doorStatus = document.getElementById('doorStatus');
+    var stats = document.getElementById('stats');
     socket.on('garage-door-state-change', function(newState) {
         var message = 'Garage door is now ' + newState + '.';
         console.log(message);
@@ -26,5 +27,8 @@ document.addEventListener('DOMContentLoaded', function() {
     });
     socket.on('garage-door-toggled', function() {
         console.log('Garage door was toggled');
+    });
+    socket.on('garage-stats', function(stats) {
+        console.log('Received Stats: ' + JSON.stringify(stats));
     });
 });

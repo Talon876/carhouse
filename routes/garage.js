@@ -2,6 +2,7 @@ var express = require('express');
 var request = require('request');
 var io = require('socket.io');
 var newEvent = require('../database').newEvent;
+var stats = require('../database').Stats;
 var router = express.Router();
 var token = process.env.TOKEN || 'your-particle-auth-token';
 var smsSecret = process.env.SMSSECRET || 'sms-secret';
@@ -115,9 +116,19 @@ var socketIoHandler = function(server) {
     var socket = io(server);
     emitter = socket;
 
-    socket.on('connection', function(client) {
+    socket.on('connection', function (client) {
         console.log('Client ' + client.id + ' joined');
         client.join('garage-events');
+        stats.lastOpened(function (openEvent) {
+            console.log('Garage door last opened at ' + openEvent.when);
+            stats.lastClosed(function (closeEvent) {
+                console.log('Garage door last closed at ' + closeEvent.when);
+                emitter.to('garage-events').emit('garage-stats', {
+                    'lastOpened': openEvent,
+                    'lastClosed': closeEvent
+                })
+            });
+        });
     });
 };
 

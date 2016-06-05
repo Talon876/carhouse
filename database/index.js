@@ -1,6 +1,9 @@
 var Sequelize = require('sequelize');
 var dbfile = process.env.DBFILE || 'database.db';
 
+var CLOSED = '1';
+var OPEN = '0';
+
 var sequelize = new Sequelize('garagedb', null, null, {
     dialect: 'sqlite',
     storage: dbfile
@@ -36,6 +39,18 @@ var generateEvent = function (kind, when, data) {
     });
 };
 
+var getLastState = function (data, cb) {
+    GarageEvent.findOne({
+        where: {
+            data: data
+        },
+        order: [['when', 'DESC']]
+    }).then(cb);
+};
+
+var getLastOpened = function(cb) { getLastState(OPEN, cb); };
+var getLastClosed = function(cb) { getLastState(CLOSED, cb); };
+
 module.exports = {
     init: function () {
         sequelize.sync().then(function() {
@@ -43,5 +58,9 @@ module.exports = {
         });
     },
     GarageEvent: GarageEvent,
-    newEvent: generateEvent
+    newEvent: generateEvent,
+    Stats: {
+        lastOpened: getLastOpened,
+        lastClosed: getLastClosed
+    }
 };
