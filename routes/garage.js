@@ -1,6 +1,7 @@
 var express = require('express');
 var request = require('request');
 var io = require('socket.io');
+var newEvent = require('../database').newEvent;
 var router = express.Router();
 var token = process.env.TOKEN || 'your-particle-auth-token';
 var smsSecret = process.env.SMSSECRET || 'sms-secret';
@@ -79,11 +80,13 @@ var eventHandlers = {
         var when = info.published_at;
         console.log('Door is ' + doorState + ' as of ' + when);
         emitter.to('garage-events').emit('garage-door-state-change', doorState);
+        newEvent('garage-door-state-change', new Date(when), info.data);
     },
     'garage-door-toggled': function(info) {
         var when = info.published_at;
         console.log('Door was toggled at ' + when);
         emitter.to('garage-events').emit('garage-door-toggled');
+        newEvent('garage-door-toggled', new Date(when), null);
     }
 };
 

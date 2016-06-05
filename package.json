@@ -13,7 +13,9 @@
     "jade": "~1.11.0",
     "morgan": "~1.6.1",
     "request": "^2.72.0",
+    "sequelize": "^3.23.3",
     "serve-favicon": "~2.3.0",
-    "socket.io": "^1.4.6"
+    "socket.io": "^1.4.6",
+    "sqlite3": "^3.1.4"
   }
 }
