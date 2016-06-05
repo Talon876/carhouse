@@ -1,6 +1,7 @@
 var express = require('express');
 var router = express.Router();
 var channel = 'garage-events';
+var newEvent = require('../database').newEvent;
 
 var fetchStatus = function (door, io) {
     door.checkStatus(function (status) {
@@ -30,6 +31,7 @@ var routerBuilder = function (door) {
             when: req.body.published_at
         };
         res.emitter.to(channel).emit(data.event, data);
+        newEvent(data.event, data.when, data.data);
         res.sendStatus(202);
     });
 
@@ -39,7 +41,6 @@ var routerBuilder = function (door) {
 module.exports = function (io, door) {
     console.log('Initializing garage door controller for door controlled via photon ' + door.photonName);
     io.on('connection', function (client) {
-        console.log('Client ' + client.id + ' connected.');
         client.join(channel);
         fetchStatus(door, io);
     });
