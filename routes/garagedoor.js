@@ -23,6 +23,16 @@ var routerBuilder = function (door) {
         res.sendStatus(202);
     });
 
+    router.post('/events', function (req, res) {
+        var data = {
+            event: req.body.event,
+            data: req.body.data,
+            when: req.body.published_at
+        };
+        res.emitter.to(channel).emit(data.event, data);
+        res.sendStatus(202);
+    });
+
     return router;
 };
 
