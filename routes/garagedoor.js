@@ -1,6 +1,6 @@
 var express = require('express');
 var moment = require('moment');
-moment.relativeTimeThreshold('s', 55);
+moment.relativeTimeThreshold('m', 51);
 var router = express.Router();
 var channel = 'garage-events';
 var newEvent = require('../database').newEvent;
@@ -51,6 +51,7 @@ var routerBuilder = function (door) {
             data: req.body.data,
             when: req.body.published_at
         };
+        console.log('Publishing Event ' + data.event + ' on ' + channel + ': ' + JSON.stringify(data));
         res.emitter.to(channel).emit(data.event, data);
         newEvent(data.event, data.when, data.data);
         res.sendStatus(202);

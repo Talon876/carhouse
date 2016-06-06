@@ -12,6 +12,9 @@
     <link rel="stylesheet" href="stylesheets/cosmo.bootstrap.css">
     <link rel="stylesheet" href="stylesheets/site.css">
     <link rel="apple-touch-icon" href="images/carhouse-icon-152.png">
+    <link href="images/startup-640-1096.png"
+          media="(device-width: 320px) and (device-height: 568px) and (-webkit-device-pixel-ratio: 2)"
+          rel="apple-touch-startup-image">
 </head>
 <body>
 <div class="container body-content">
@@ -24,10 +27,11 @@
     </div>
     <div class="row">
         <div class="col-sm-8 col-sm-offset-2 col-md-6 col-md-offset-3">
-            <button type="button" class="btn btn-primary btn-lg btn-block text-uppercase">Toggle Door</button>
+            <button id="doorToggle" type="button" class="btn btn-primary btn-lg btn-block text-uppercase">Toggle Door
+            </button>
         </div>
     </div>
-    <div class="row top-buffer">
+    <div class="row top-buffer hidden">
         <div class="col-sm-8 col-sm-offset-2 col-md-6 col-md-offset-3">
             <div class="alert alert-success alert-dismissible" role="alert">
                 <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span
@@ -44,12 +48,10 @@
                     </h3>
                 </div>
                 <ul class="list-group">
-                    <li class="list-group-item list-group-item-success text-center text-uppercase">Closed</li>
-                    <!--<li class="list-group-item  list-group-item-warning text-center text-uppercase">Open</li>-->
-                    <li class="list-group-item" title="Sunday, June 5 5:48:13">Last opened <strong class="pull-right">2
-                        hours ago</strong></li>
-                    <li class="list-group-item">Seconds Open<span class="badge">12</span></li>
-                    <li class="list-group-item">Events Recorded <span class="badge">42</span></li>
+                    <li id="doorStatus" class="list-group-item text-center text-uppercase">--</li>
+                    <li id="lastOpened" class="list-group-item" title="Sunday, June 5 5:48:13">Last Opened <strong id="lastOpenedDisplay" class="pull-right">--</strong></li>
+                    <li class="list-group-item">Seconds Open<span id="secondsOpen" class="badge">--</span></li>
+                    <li class="list-group-item">Events Recorded <span id="eventsRecorded" class="badge">--</span></li>
                 </ul>
             </div>
         </div>
