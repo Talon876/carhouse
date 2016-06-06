@@ -31,12 +31,12 @@
             </button>
         </div>
     </div>
-    <div class="row top-buffer hidden">
+    <div class="row top-buffer">
         <div class="col-sm-8 col-sm-offset-2 col-md-6 col-md-offset-3">
-            <div class="alert alert-success alert-dismissible" role="alert">
-                <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span
+            <div id="doorToggleAlert" style="display:none" class="alert alert-success" role="alert">
+                <button type="button" class="close" aria-label="Close"><span
                         aria-hidden="true">&times;</span></button>
-                <strong>Success!</strong> Door has been toggled.
+                Garage door has been toggled.
             </div>
         </div>
     </div>
@@ -49,7 +49,8 @@
                 </div>
                 <ul class="list-group">
                     <li id="doorStatus" class="list-group-item text-center text-uppercase">--</li>
-                    <li id="lastOpened" class="list-group-item" title="Sunday, June 5 5:48:13">Last Opened <strong id="lastOpenedDisplay" class="pull-right">--</strong></li>
+                    <li id="lastOpened" class="list-group-item" title="Sunday, June 5 5:48:13">Last Opened <strong
+                            id="lastOpenedDisplay" class="pull-right">--</strong></li>
                     <li class="list-group-item">Seconds Open<span id="secondsOpen" class="badge">--</span></li>
                     <li class="list-group-item">Events Recorded <span id="eventsRecorded" class="badge">--</span></li>
                 </ul>

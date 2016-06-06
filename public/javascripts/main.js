@@ -20,13 +20,16 @@ document.addEventListener('DOMContentLoaded', function () {
     var socket = io.connect({
         transports: ['websocket', 'polling']
     });
-    socket.on('garage-door-state-change', function (data) {
-        var info = JSON.stringify(data);
-        var message = 'Garage door is now ' + info.data + '.';
-        console.log(message);
-    });
     socket.on('garage-door-toggled', function () {
         console.log('Garage door was toggled');
+        var doorToggleAlertDiv = $('#doorToggleAlert');
+        if (doorToggleAlertDiv.is(':visible')) {
+            doorToggleAlertDiv.fadeOut(function () {
+                doorToggleAlertDiv.fadeIn();
+            })
+        } else {
+            doorToggleAlertDiv.fadeIn();
+        }
     });
     socket.on('garage-stats', function (stats) {
         console.group('stats update');
@@ -83,6 +86,10 @@ document.addEventListener('DOMContentLoaded', function () {
                 });
                 break;
         }
+    });
+
+    $('.close').click(function () {
+        $('.alert').fadeOut();
     });
 
 });

@@ -65,5 +65,6 @@ module.exports = {
         return new GarageDoor(options);
     },
     OPEN: OPEN,
-    CLOSED: CLOSED
+    CLOSED: CLOSED,
+    convertDoorState: convertDoorState
 };
