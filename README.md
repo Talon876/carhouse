@@ -1,6 +1,9 @@
 # carhouse
 
-Garage door controller
+Control your garage door using a particle photon.
+
+![preview](http://i.imgur.com/7QnslOk.png)
+
 
 ## Run with docker
 
