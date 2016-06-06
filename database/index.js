@@ -48,6 +48,10 @@ var getLastState = function (data, cb) {
     }).then(cb);
 };
 
+var getEventAmount = function(cb) {
+    GarageEvent.count().then(cb);
+};
+
 var getLastOpened = function(cb) { getLastState(OPEN, cb); };
 var getLastClosed = function(cb) { getLastState(CLOSED, cb); };
 
@@ -61,6 +65,7 @@ module.exports = {
     newEvent: generateEvent,
     Stats: {
         lastOpened: getLastOpened,
-        lastClosed: getLastClosed
+        lastClosed: getLastClosed,
+        amount: getEventAmount
     }
 };

@@ -1,13 +1,34 @@
 var express = require('express');
+var moment = require('moment');
+moment.relativeTimeThreshold('s', 55);
 var router = express.Router();
 var channel = 'garage-events';
 var newEvent = require('../database').newEvent;
+var Stats = require('../database').Stats;
 
 var fetchStatus = function (door, io) {
     door.checkStatus(function (status) {
         if (status) {
             io.to(channel).emit('garage-door-status', status);
         }
+    });
+};
+
+var fetchStats = function (io) {
+    Stats.lastOpened(function (lastOpen) {
+        Stats.lastClosed(function (lastClosed) {
+            Stats.amount(function (amount) {
+                var stats = {
+                    lastOpen: lastOpen.when,
+                    lastOpenDisplay: moment(lastOpen.when).fromNow(),
+                    lastClosed: lastClosed.when,
+                    lastClosedDisplay: moment(lastClosed.when).fromNow(),
+                    timeLastOpen: moment.duration(lastClosed.when - lastOpen.when, moment.SECOND).seconds(),
+                    amount: amount
+                };
+                io.to(channel).emit('garage-stats', stats);
+            });
+        });
     });
 };
 
@@ -43,6 +64,7 @@ module.exports = function (io, door) {
     io.on('connection', function (client) {
         client.join(channel);
         fetchStatus(door, io);
+        fetchStats(io);
     });
     return routerBuilder(door);
 };
