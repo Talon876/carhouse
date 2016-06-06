@@ -4,9 +4,14 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
     <meta name="viewport" content="width=device-width">
+    <meta name="apple-touch-fullscreen" content="yes"/>
+    <meta name="apple-mobile-web-app-capable" content="yes"/>
+    <meta name="apple-mobile-web-app-status-bar-style" content="white"/>
     <title>Car House</title>
-    <link rel="stylesheet" href="/stylesheets/cosmo.bootstrap.css">
-    <link rel="stylesheet" href="/stylesheets/site.css">
+    <link rel="shortcut icon" href="https://nolat.org/favicon.ico"/>
+    <link rel="stylesheet" href="stylesheets/cosmo.bootstrap.css">
+    <link rel="stylesheet" href="stylesheets/site.css">
+    <link rel="apple-touch-icon" href="images/carhouse-icon-152.png">
 </head>
 <body>
 <div class="container body-content">
@@ -17,10 +22,43 @@
             </div>
         </div>
     </div>
+    <div class="row">
+        <div class="col-sm-8 col-sm-offset-2 col-md-6 col-md-offset-3">
+            <button type="button" class="btn btn-primary btn-lg btn-block text-uppercase">Toggle Door</button>
+        </div>
+    </div>
+    <div class="row top-buffer">
+        <div class="col-sm-8 col-sm-offset-2 col-md-6 col-md-offset-3">
+            <div class="alert alert-success alert-dismissible" role="alert">
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span
+                        aria-hidden="true">&times;</span></button>
+                <strong>Success!</strong> Door has been toggled.
+            </div>
+        </div>
+    </div>
+    <div class="row top-buffer">
+        <div class="col-sm-8 col-sm-offset-2 col-md-6 col-md-offset-3">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h3 class="panel-title"><span class="glyphicon-stats right-buffer glyphicon"></span> Information
+                    </h3>
+                </div>
+                <ul class="list-group">
+                    <li class="list-group-item list-group-item-success text-center text-uppercase">Closed</li>
+                    <!--<li class="list-group-item  list-group-item-warning text-center text-uppercase">Open</li>-->
+                    <li class="list-group-item" title="Sunday, June 5 5:48:13">Last opened <strong class="pull-right">2
+                        hours ago</strong></li>
+                    <li class="list-group-item">Seconds Open<span class="badge">12</span></li>
+                    <li class="list-group-item">Events Recorded <span class="badge">42</span></li>
+                </ul>
+            </div>
+        </div>
+    </div>
 </div>
 <script src="https://cdn.socket.io/socket.io-1.4.5.js"></script>
 <script src="javascripts/vendor/jquery-1.10.2.min.js"></script>
 <script src="javascripts/vendor/bootstrap.min.js"></script>
 <script src="javascripts/vendor/respond.min.js"></script>
+<script src="javascripts/main.js"></script>
 </body>
 </html>

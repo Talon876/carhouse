@@ -8,6 +8,10 @@ body {
     padding-right: 15px;
 }
 
+.page-header {
+    margin-top: 22px;
+}
+
 /* Override the default bootstrap behavior where horizontal description lists
    will truncate terms that are too long to fit in the left column
 */
