@@ -1,0 +1,73 @@
+body {
+    padding-bottom: 20px;
+}
+
+/* Set padding to keep content from hitting the edges */
+.body-content {
+    padding-left: 15px;
+    padding-right: 15px;
+}
+
+/* Override the default bootstrap behavior where horizontal description lists
+   will truncate terms that are too long to fit in the left column
+*/
+.dl-horizontal dt {
+    white-space: normal;
+}
+
+.top-buffer {
+    margin-top: 12px;
+}
+
+.bottom-buffer {
+    margin-bottom: 12px;
+}
+
+.right-buffer {
+    margin-right: 4px;
+}
+
+.left-buffer {
+    margin-left: 4px;
+}
+
+img {
+    border: 1px solid black;
+}
+
+img.no-outline {
+    border: none;
+}
+
+.img-center {
+    margin: 0 auto;
+}
+
+td.hideable {
+}
+
+.imgur-link {
+}
+
+.text-underline {
+    text-decoration: underline;
+}
+
+.img-detail {
+    width: auto;
+    height: auto;
+}
+
+.panel-footer-btn-group {
+    padding: 0;
+}
+
+.img-preview {
+    width: 100%;
+    height: auto;
+    border: none;
+}
+
+.no-padding {
+    padding: 0;
+}
