@@ -1,4 +1,4 @@
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', function () {
     //var toggleDoor = function() {
     //    var request = new XMLHttpRequest();
     //    request.open('POST', '/toggle', true);
@@ -17,18 +17,24 @@ document.addEventListener('DOMContentLoaded', function() {
     //    toggleDoor();
     //};
 
-    var socket = io.connect(window.location.origin);
+    var socket = io.connect({
+        transports: ['websocket', 'polling']
+    });
     //var doorStatus = document.getElementById('doorStatus');
     //var stats = document.getElementById('stats');
-    socket.on('garage-door-state-change', function(newState) {
+    socket.on('garage-door-state-change', function (newState) {
         var message = 'Garage door is now ' + newState + '.';
         console.log(message);
         doorStatus.innerText = message;
     });
-    socket.on('garage-door-toggled', function() {
+    socket.on('garage-door-toggled', function () {
         console.log('Garage door was toggled');
     });
-    socket.on('garage-stats', function(stats) {
+    socket.on('garage-stats', function (stats) {
         console.log('Received Stats: ' + JSON.stringify(stats));
     });
+    socket.on('garage-door-status', function (status) {
+        console.log("garage door is " + status.display);
+    });
+
 });
