@@ -6,6 +6,7 @@ var channel = 'garage-events';
 var newEvent = require('../database').newEvent;
 var Stats = require('../database').Stats;
 var convertDoorState = require('../garagedoor').convertDoorState;
+var smsSecret = process.env.SMSSECRET;
 
 var fetchStatus = function (door, io) {
     door.checkStatus(function (status) {
@@ -81,6 +82,29 @@ var routerBuilder = function (door) {
             console.log('No event handler for ' + data.event);
         }
         res.sendStatus(202);
+    });
+
+    var allowed = {};
+    router.post('/sms', function(req, res) {
+        var from = req.body.From;
+        var body = req.body.Body;
+        console.log('Received ' + body + ' from ' + from);
+
+        if (body === smsSecret) {
+            allowed[from] = true;
+            res.set('content-type', 'text/plain');
+            res.send('All future messages will now toggle the garage door.');
+        } else {
+            if (allowed[from] === true) {
+                console.log('Toggling garage door for ' + from);
+                door.toggle();
+                res.set('content-type', 'text/plain');
+                res.send('toggled');
+            } else {
+                console.log('Failed attempt from ' + from);
+                res.sendStatus(403);
+            }
+        }
     });
 
     return router;
