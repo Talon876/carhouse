@@ -88,6 +88,7 @@ var routerBuilder = function (door) {
         var from = req.body.From;
         var body = req.body.Body;
         console.log('Received ' + body + ' from ' + from);
+        db.messages.add(from, body);
 
         db.people.findByPhone(from, function (person) {
             var canToggle = body.toLowerCase() === smsSecret;

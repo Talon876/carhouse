@@ -54,6 +54,32 @@ var Person = sequelize.define('people', {
     underscored: true
 });
 
+var Message = sequelize.define('messages', {
+    messageId: {
+        type: Sequelize.INTEGER,
+        primaryKey: true,
+        autoIncrement: true
+    },
+    from: {
+        type: Sequelize.STRING
+    },
+    body: {
+        type: Sequelize.STRING
+    }
+}, {
+    underscored: true,
+    updatedAt: false
+});
+
+var messages = {
+    add: function (from, body) {
+        Message.create({
+            from: from,
+            body: body
+        });
+    }
+};
+
 var people = {
     add: function (phone, canToggle) {
         Person.create({
@@ -113,5 +139,6 @@ module.exports = {
         amount: getEventAmount,
         newEvent: generateEvent
     },
-    people: people
+    people: people,
+    messages: messages
 };
