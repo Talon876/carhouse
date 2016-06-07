@@ -3,10 +3,9 @@ var moment = require('moment');
 moment.relativeTimeThreshold('m', 51);
 var router = express.Router();
 var channel = 'garage-events';
-var newEvent = require('../database').newEvent;
-var Stats = require('../database').Stats;
+var db = require('../database');
 var convertDoorState = require('../garagedoor').convertDoorState;
-var smsSecret = process.env.SMSSECRET;
+var smsSecret = process.env.SMSSECRET.toLowerCase();
 
 var fetchStatus = function (door, io) {
     door.checkStatus(function (status) {
@@ -17,9 +16,9 @@ var fetchStatus = function (door, io) {
 };
 
 var fetchStats = function (io) {
-    Stats.lastOpened(function (lastOpen) {
-        Stats.lastClosed(function (lastClosed) {
-            Stats.amount(function (amount) {
+    db.stats.lastOpened(function (lastOpen) {
+        db.stats.lastClosed(function (lastClosed) {
+            db.stats.amount(function (amount) {
                 var stats = {
                     lastOpen: lastOpen.when,
                     lastOpenDisplay: moment(lastOpen.when).fromNow(),
@@ -51,7 +50,7 @@ var eventHandlers = {
 var routerBuilder = function (door) {
     var router = express.Router();
 
-    router.post('/refresh', function(req, res) {
+    router.post('/refresh', function (req, res) {
         fetchStats(res.emitter);
         fetchStatus(door, res.emitter);
         res.sendStatus(202);
@@ -73,7 +72,7 @@ var routerBuilder = function (door) {
             data: req.body.data,
             when: req.body.published_at
         };
-        newEvent(data.event, data.when, data.data);
+        db.stats.newEvent(data.event, data.when, data.data);
         console.log('Publishing Event ' + data.event + ' on ' + channel + ': ' + JSON.stringify(data));
         var handler = eventHandlers[data.event];
         if (handler) {
@@ -84,27 +83,42 @@ var routerBuilder = function (door) {
         res.sendStatus(202);
     });
 
-    var allowed = {};
-    router.post('/sms', function(req, res) {
+    router.post('/sms', function (req, res) {
+        res.set('content-type', 'text/plain');
         var from = req.body.From;
         var body = req.body.Body;
         console.log('Received ' + body + ' from ' + from);
 
-        if (body === smsSecret) {
-            allowed[from] = true;
-            res.set('content-type', 'text/plain');
-            res.send('All future messages will now toggle the garage door.');
-        } else {
-            if (allowed[from] === true) {
-                console.log('Toggling garage door for ' + from);
-                door.toggle();
-                res.set('content-type', 'text/plain');
-                res.send('toggled');
+        db.people.findByPhone(from, function (person) {
+            var canToggle = body.toLowerCase() === smsSecret;
+            console.log(body.toLowerCase() + " " + smsSecret);
+            if (person) {
+                if (person.canToggleDoor) {
+                    console.log('Toggling garage door for ' + from);
+                    //door.toggle();
+                    res.send('toggled');
+                } else if (canToggle) {
+                    person.canToggleDoor = true;
+                    person.save();
+                    res.send('Success! All future messages will now toggle the garage door.');
+                } else {
+                    console.log('Failed attempt from ' + from);
+                    res.sendStatus(403);
+                }
+                person.lastHeard = new Date();
+                person.save();
             } else {
-                console.log('Failed attempt from ' + from);
-                res.sendStatus(403);
+                console.log('No record of someone from ' + from);
+                console.log(smsSecret);
+                db.people.add(from, canToggle);
+                if (canToggle) {
+                    res.send('Welcome, all future messages will now toggle the garage door.');
+                } else {
+                    res.send('Incorrect. You will not receive any more responses until you send me the secret phrase.');
+                }
             }
-        }
+        });
+
     });
 
     return router;

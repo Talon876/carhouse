@@ -29,6 +29,48 @@ var GarageEvent = sequelize.define('garage_events', {
     updatedAt: false
 });
 
+var Person = sequelize.define('people', {
+    personId: {
+        type: Sequelize.INTEGER,
+        primaryKey: true,
+        autoIncrement: true
+    },
+    displayName: {
+        type: Sequelize.STRING
+    },
+    phone: {
+        type: Sequelize.STRING,
+        unique: true
+    },
+    lastHeard: {
+        type: Sequelize.DATE,
+        defaultValue: Sequelize.NOW
+    },
+    canToggleDoor: {
+        type: Sequelize.BOOLEAN,
+        defaultValue: false
+    }
+}, {
+    underscored: true
+});
+
+var people = {
+    add: function (phone, canToggle) {
+        Person.create({
+            phone: phone,
+            displayName: phone,
+            canToggleDoor: canToggle || false
+        });
+    },
+    findByPhone: function (phone, cb) {
+        Person.findOne({
+            where: {
+                phone: phone
+            }
+        }).then(cb);
+    }
+};
+
 var generateEvent = function (kind, when, data) {
     GarageEvent.create({
         kind: kind,
@@ -48,24 +90,28 @@ var getLastState = function (data, cb) {
     }).then(cb);
 };
 
-var getEventAmount = function(cb) {
+var getEventAmount = function (cb) {
     GarageEvent.count().then(cb);
 };
 
-var getLastOpened = function(cb) { getLastState(OPEN, cb); };
-var getLastClosed = function(cb) { getLastState(CLOSED, cb); };
+var getLastOpened = function (cb) {
+    getLastState(OPEN, cb);
+};
+var getLastClosed = function (cb) {
+    getLastState(CLOSED, cb);
+};
 
 module.exports = {
     init: function () {
-        sequelize.sync().then(function() {
+        sequelize.sync().then(function () {
             console.log(dbfile + ' database initialized');
         });
     },
-    GarageEvent: GarageEvent,
-    newEvent: generateEvent,
-    Stats: {
+    stats: {
         lastOpened: getLastOpened,
         lastClosed: getLastClosed,
-        amount: getEventAmount
-    }
+        amount: getEventAmount,
+        newEvent: generateEvent
+    },
+    people: people
 };
