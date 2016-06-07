@@ -50,6 +50,12 @@ var eventHandlers = {
 var routerBuilder = function (door) {
     var router = express.Router();
 
+    router.post('/refresh', function(req, res) {
+        fetchStats(res.emitter);
+        fetchStatus(door, res.emitter);
+        res.sendStatus(202);
+    });
+
     router.get('/status', function (req, res) {
         fetchStatus(door, res.emitter);
         res.sendStatus(202);
