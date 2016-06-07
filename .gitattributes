@@ -17,3 +17,4 @@
 *.RTF	 diff=astextplain
 
 public/javascripts/vendor/* linguist-vendored
+public/javascripts/stylesheets/*bootstrap.css linguist-vendored
