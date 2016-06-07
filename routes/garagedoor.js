@@ -95,7 +95,7 @@ var routerBuilder = function (door) {
             if (person) {
                 if (person.canToggleDoor) {
                     console.log('Toggling garage door for ' + from);
-                    //door.toggle();
+                    door.toggle();
                     res.send('toggled');
                 } else if (canToggle) {
                     person.canToggleDoor = true;
