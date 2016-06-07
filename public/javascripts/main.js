@@ -1,20 +1,8 @@
 document.addEventListener('DOMContentLoaded', function () {
 
-    var toggleDoor = function () {
+    var dispatch = function(method, path) {
         var request = new XMLHttpRequest();
-        request.open('POST', '/garage/toggle', true);
-        request.onload = function () {
-            if (request.status >= 200 && request.status < 400) {
-            } else {
-                console.log('Request failed');
-            }
-        };
-        request.send();
-    };
-
-    var refreshStats = function() {
-        var request = new XMLHttpRequest();
-        request.open('POST', '/garage/refresh', true);
+        request.open(method, path, true);
         request.onload = function () {
             if (request.status >= 200 && request.status < 400) {
             } else {
@@ -27,7 +15,7 @@ document.addEventListener('DOMContentLoaded', function () {
     var toggleDoorButton = document.getElementById('doorToggle');
     toggleDoorButton.onclick = function () {
         console.log('Toggling garage door.');
-        toggleDoor();
+        dispatch('POST', '/garage/toggle');
     };
 
     var socket = io.connect({
@@ -107,7 +95,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     $('#refreshButton').on('click', function () {
         console.log('Requesting latest stats');
-        refreshStats();
+        dispatch('POST', '/garage/refresh');
         var $icon = $('#refreshIcon');
         var animateClass = 'spinning';
         $icon.addClass(animateClass);
